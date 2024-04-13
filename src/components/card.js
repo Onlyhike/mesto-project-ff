@@ -1,8 +1,6 @@
 export { createCardElem, handleLikeClick, deleteListItem };
 
-
-
-function createCardElem(name, picture, deleteListItem, openFunc, handleLikeClick) {
+function createCardElem( name, picture, deleteListItem, setImageTypePopup, handleLikeClick) {
     const cardTemplate = document.querySelector('#card-template').content;
     const placesItem = cardTemplate.cloneNode('#card-template');
     const likeButton = placesItem.querySelector('.card__like-button');
@@ -15,7 +13,7 @@ function createCardElem(name, picture, deleteListItem, openFunc, handleLikeClick
     cardImage.alt = name;
 
     deleteButton.addEventListener('click', deleteListItem);
-    cardImage.addEventListener('click', openFunc);
+    cardImage.addEventListener('click', setImageTypePopup);
     likeButton.addEventListener('click', handleLikeClick);
     
     return placesItem;
