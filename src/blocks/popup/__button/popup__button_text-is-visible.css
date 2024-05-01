@@ -1,0 +1,4 @@
+.popup_button_text-is-visible {
+    opacity: 1;
+    transition: opacity 0.1s 0.1s;
+  }

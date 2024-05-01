@@ -3,7 +3,7 @@ export { enableValidation, clearValidation }
 function showInputError(errElement, formField, inputErrorClass) {
     formField.classList.add(inputErrorClass);
 
-    if(formField.validity.patternMismatch) {
+    if( formField.validity.patternMismatch ) {
         formField.setCustomValidity(formField.getAttribute('data-error-message'));
     } else {
         formField.setCustomValidity('');

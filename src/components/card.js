@@ -1,5 +1,6 @@
 export { createCardElem, handleLikeClick, deleteListItem };
 import { deleteCard, likeCard, unLikeCard } from '../api'
+// import { openPopup } from './modal';
 
 function createCardElem( name, picture, deleteListItem, setImageTypePopup, handleLikeClick, likesQuantityValue, matchIdResult, cardId, isLikedByMe) {
     const cardTemplate = document.querySelector('#card-template').content;
@@ -10,6 +11,8 @@ function createCardElem( name, picture, deleteListItem, setImageTypePopup, handl
     const deleteButton = placesItem.querySelector('.card__delete-button');
     const likesQuantityElem = document.createElement('div');
     const likesContainer = placesItem.querySelector('.card__likes-container');
+    // const popupTypeDeleteConfirm = document.querySelector('.popup_type_delete-confirm');
+    // const deleteConfirmButton = document.querySelector('.popup__button_delete-confirm');
 
     cardTitle.textContent = name;
     cardImage.src = picture;
@@ -70,4 +73,5 @@ function deleteListItem(evt, cardId) {
         console.log(err);
     })
 };
+
 

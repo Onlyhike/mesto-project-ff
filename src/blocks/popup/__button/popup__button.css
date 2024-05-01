@@ -1,4 +1,5 @@
 .popup__button {
+  position: relative;
   width: 100%;
   height: 50px;
   font-size: 18px;

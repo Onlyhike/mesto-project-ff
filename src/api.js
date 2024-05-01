@@ -8,17 +8,19 @@ const config = {
     }
   }
 
+function handleResponse(res){
+    if (res.ok) {
+    return res.json();
+  }
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 function initProfileSection() {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'GET',
         headers: config.headers,
     })
-    .then((res) => {
-        if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     }); 
@@ -29,12 +31,7 @@ function getInitialCards() {
         method: 'GET',
         headers: config.headers,
     })
-    .then((res) => {
-        if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     });
@@ -49,10 +46,7 @@ function sendProfileData(name, about) {
             about: `${about}`
         })
     })
-    .then((res) => {
-        if(res.ok) { return res.json() };
-        return Promise.reject(`Ошибка: ${res.status}`)
-        })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     })
@@ -67,10 +61,7 @@ function sendCardData(name, link) {
             link: `${link}`
           })
     })
-    .then((res) => {
-        if(res.ok) { return res.json() };
-        return Promise.reject(`Ошибка: ${res.status}`)
-        })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     })
@@ -88,10 +79,7 @@ function likeCard(cardId) {
         method: 'PUT',
         headers: config.headers,
     })
-    .then((res) => {
-        if(res.ok) { return res.json() };
-        return Promise.reject(`Ошибка: ${res.status}`)
-        })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     })
@@ -102,10 +90,7 @@ function unLikeCard(cardId) {
         method: 'DELETE',
         headers: config.headers,
     })
-    .then((res) => {
-        if(res.ok) { return res.json() };
-        return Promise.reject(`Ошибка: ${res.status}`)
-        })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     })
@@ -119,10 +104,7 @@ function setNewAvatar(avatarUrl) {
             avatar: `${avatarUrl}`
         })
     })
-    .then((res) => {
-        if(res.ok) { return res.json() };
-        return Promise.reject(`Ошибка: ${res.status}`)
-    })
+    .then(handleResponse)
     .catch((err) => {
         console.log(err);
     })

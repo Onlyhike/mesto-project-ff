@@ -10,6 +10,9 @@
 @import url('./__input/popup__input_invalid.css');
 @import url('./__input-error/popup__input-error.css');
 @import url('./__button/popup__button_disabled.css');
+@import url('./__button/popup__button_loading-text.css');
+@import url('./__button/popup__button_initial-text.css');
+@import url('./__button/popup__button_text-is-visible.css');
 
 .popup {
   font-family: 'Inter', Arial, sans-serif;
