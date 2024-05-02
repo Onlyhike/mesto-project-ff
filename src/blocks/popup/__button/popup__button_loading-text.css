@@ -1,6 +1,0 @@
-.popup__button_loading-text {
-    position: absolute;
-    inline-size: 100%;
-    opacity: 0;
-    transition: opacity 0.1s;
-}
