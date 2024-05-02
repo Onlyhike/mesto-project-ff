@@ -16,102 +16,102 @@ function handleResponse(res){
 }
 
 function initProfileSection() {
-    return fetch(`${config.baseUrl}/users/me`, {
+    return fetch( `${config.baseUrl}/users/me`, {
         method: 'GET',
         headers: config.headers,
-    })
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    }); 
+    } ); 
 }
 
 function getInitialCards() {
-    return fetch(`${config.baseUrl}/cards`, {
+    return fetch( `${config.baseUrl}/cards`, {
         method: 'GET',
         headers: config.headers,
-    })
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    });
+    } );
 }
 
 function sendProfileData(name, about) {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
         headers: config.headers,
-        body: JSON.stringify({
+        body: JSON.stringify( {
             name: `${name}`,
             about: `${about}`
-        })
-    })
+        } )
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    })
+    } );
 }
 
 function sendCardData(name, link) {
-    return fetch(`${config.baseUrl}/cards`, {
+    return fetch( `${config.baseUrl}/cards`, {
         method: 'POST',
         headers: config.headers,
-        body: JSON.stringify({
+        body: JSON.stringify( {
             name: `${name}`,
             link: `${link}`
-          })
-    })
+          } )
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    })
+    } );
 }
 
 function deleteCard(cardId) {
-    return fetch(`${config.baseUrl}/cards/${cardId}`, {
+    return fetch( `${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: config.headers,
-    })
+    } )
 }
 
 function likeCard(cardId) {
-    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    return fetch( `${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
         headers: config.headers,
-    })
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    })
+    } )
 }
 
 function unLikeCard(cardId) {
-    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    return fetch( `${config.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
         headers: config.headers,
-    })
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    })
+    } )
 }
 
 function setNewAvatar(avatarUrl) {
-    return fetch(`${config.baseUrl}/users/me/avatar`, {
+    return fetch( `${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
         headers: config.headers,
-        body: JSON.stringify({
+        body: JSON.stringify( {
             avatar: `${avatarUrl}`
-        })
-    })
+        } )
+    } )
     .then(handleResponse)
-    .catch((err) => {
+    .catch( (err) => {
         console.log(err);
-    })
+    } )
 }
 
 function isUrlExist(avatarUrl) {
-    return fetch(`${avatarUrl}`, {
+    return fetch( `${avatarUrl}`, {
         method: 'HEAD'
-    })
+    } )
 }

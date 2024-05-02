@@ -16,53 +16,63 @@ function createCardElem( name, picture, setImageTypePopup, handleLikeClick, like
     cardTitle.textContent = name;
     cardImage.src = picture;
     cardImage.alt = name;
+
     placesItem.setAttribute('id', `${cardId}`)
 
-    if(isLikedByMe) likeButton.classList.toggle('card__like-button_is-active')
+    if (isLikedByMe) likeButton.classList.toggle('card__like-button_is-active')
 
-    if(likesQuantityValue) {
+    if (likesQuantityValue) {
         likesQuantityElem.textContent = likesQuantityValue;
-        likesContainer.append(likesQuantityElem)
+        likesContainer.append(likesQuantityElem);
     }
 
-    if(matchIdResult) {
+    if (matchIdResult) {
         deleteButton.style.display = 'inline-block';
     }
 
-    deleteButton.addEventListener('click', (evt) => {
-        openPopup(popupTypeDeleteConfirm);
+    deleteButton.addEventListener( 'click', (evt) => {
         const cardToDelete = evt.target.closest('li');
         const cardId = cardToDelete.getAttribute('id');
+
+        openPopup(popupTypeDeleteConfirm);
         deleteConfirmButton.setAttribute('data-card-to-delete-id', `${cardId}`)
-    });
+    } );
 
     cardImage.addEventListener('click', setImageTypePopup);
-    likeButton.addEventListener('click', (evt) => handleLikeClick(evt, cardId, likesQuantityElem, likesContainer));
+    likeButton.addEventListener( 'click', (evt) => handleLikeClick(evt, cardId, likesQuantityElem, likesContainer) );
     
     return placesItemClone;
 }
 
 function handleLikeClick(evt, cardId, likesQuantityElem, likesContainer) {
-    if(!evt.target.classList.contains('card__like-button_is-active')) {
+    if( !evt.target.classList.contains('card__like-button_is-active') ) {
         likeCard(cardId)
-        .then((result) => {
+        .then( (result) => {
             evt.target.classList.toggle('card__like-button_is-active');
-            if(result.likes.length === 1) likesContainer.append(likesQuantityElem);
+
+            if (result.likes.length === 1) {
+                likesContainer.append(likesQuantityElem);
+            };
+
             likesQuantityElem.textContent = result.likes.length;
-        })
-        .catch((err) => {
+        } )
+        .catch( (err) => {
             console.log(err);
-        })
+        } )
     } else {
         unLikeCard(cardId)
-        .then((result) => {
+        .then( (result) => {
             evt.target.classList.toggle('card__like-button_is-active');
-            if(result.likes.length === 0) likesQuantityElem.remove();
+
+            if (result.likes.length === 0) {
+                likesQuantityElem.remove();
+            };
+
             likesQuantityElem.textContent = result.likes.length;
-        })
-        .catch((err) => {
+        } )
+        .catch( (err) => {
             console.log(err);
-        })
+        } )
     }
   }
 
