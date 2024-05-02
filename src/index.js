@@ -1,8 +1,8 @@
 import '../src/pages/index.css';
-import { createCardElem, handleLikeClick, deleteListItem } from './components/card';
+import { createCardElem, handleLikeClick } from './components/card';
 import { openPopup, closePopup } from './components/modal';
 import { enableValidation, clearValidation } from './validation';
-import { initProfileSection, getInitialCards, sendProfileData, sendCardData, setNewAvatar, isUrlExist } from './api';
+import { initProfileSection, getInitialCards, sendProfileData, sendCardData, setNewAvatar, isUrlExist, deleteCard } from './api';
 
 const placesList = document.querySelector('.places__list');
 const editProfileForm = document.forms['edit-profile'];
@@ -24,6 +24,9 @@ const popupTypeImage = document.querySelector('.popup_type_image');
 const popupCaption = document.querySelector('.popup__caption');
 const popupImage = document.querySelector('.popup__image');
 const popupTypeNewAvatar = document.querySelector('.popup_type_new-avatar');
+const popupTypeDeleteConfirm = document.querySelector('.popup_type_delete-confirm');
+const deleteConfirmButton = document.querySelector('.popup__button_delete-confirm');
+
 const validationConfig = {
   formSelector: 'popup__form',
   inputSelector: 'popup__input',
@@ -34,6 +37,23 @@ const validationConfig = {
 }
 let myId;
 let matchIdResult;
+
+function deleteListItem(evt) {
+  const cardId = evt.target.getAttribute('data-card-to-delete-id');
+  const cardToDelete = document.getElementById(`${cardId}`); //здесь так и не разобрался, почему-то не работает document.querySelector(`#${cardId}`), поэтому оставил getElementById
+  deleteCard(cardId)
+  .then((res) => {
+      if(res.ok) {
+        cardToDelete.remove();
+        closePopup(popupTypeDeleteConfirm);
+      } else {
+          return Promise.reject(`Ошибка: ${res.status}`)
+      }
+  })
+  .catch((err) => {
+      console.log(err);
+  })
+};
 
 function setImageTypePopup(evt) {
   popupImage.src = evt.target.src;
@@ -47,8 +67,8 @@ function addNewPlace(evt) {
   sendCardData(placeFormField.value, pictureFormField.value)
   .then((result) => {
     matchIdResult = myId === result.owner._id;
-    const newCard = createCardElem( result.name, result.link, deleteListItem, setImageTypePopup, handleLikeClick, 0, matchIdResult, result._id, false);
-
+    const cardId = result._id;
+    const newCard = createCardElem( result.name, result.link, setImageTypePopup, handleLikeClick, 0, matchIdResult, cardId, false, popupTypeDeleteConfirm, deleteConfirmButton);
     placesList.prepend(newCard)
   })
   .catch((err) => {
@@ -92,6 +112,8 @@ function changeSubmitBtnState(evt) {
   initialText.classList.toggle('popup_button_text-is-visible')
 }
 
+deleteConfirmButton.addEventListener('click', deleteListItem);
+
 placesList.addEventListener('click', (evt) => {
     if(evt.target.classList.contains('card__image')) {
         openPopup(popupTypeImage);
@@ -103,6 +125,17 @@ profileImage.addEventListener('click', () => {
   newAvatarForm.reset()
   openPopup(popupTypeNewAvatar);
 });
+
+buttonOpenEditProfileForm.addEventListener( 'click', () => {
+  initEditProfileForm(nameInput, profileName, descriptionInput, profileDescription);
+  openPopup(popupTypeEdit);
+} );
+
+buttonOpenAddCardForm.addEventListener( 'click', () => {
+openPopup(popupTypeNewCard);
+newPlaceform.reset();
+clearValidation(newPlaceform, validationConfig)
+} );
 
 newAvatarForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -117,29 +150,23 @@ newAvatarForm.addEventListener('submit', (evt) => {
         closePopup(popupTypeNewAvatar);
       })
     } else {
-        return Promise.reject(`Ошибка в isUrlExist ${res.status}, res.ok = ${res.ok}`)
+        return Promise.reject({
+          errorMessage: `Ошибка в isUrlExist ${res.status}`,
+          mimeType: res.headers.get('Content-Type')
+      })
     }
 })
   .catch((err) => {
-    console.log(err);
-    closePopup(popupTypeNewAvatar);
+    console.log(err.errorMessage);
+    if(!err.mimeType.startsWith('image')){
+      console.log('По указанному Url не изображение')
+    }
   })
   .finally(() => changeSubmitBtnState(evt))
 })
 
-buttonOpenEditProfileForm.addEventListener( 'click', () => {
-    initEditProfileForm(nameInput, profileName, descriptionInput, profileDescription);
-    openPopup(popupTypeEdit);
-} );
-
 editProfileForm.addEventListener( 'submit', (evt) => {
     handleEditFormSubmit(evt);
-} );
-
-buttonOpenAddCardForm.addEventListener( 'click', () => {
-    openPopup(popupTypeNewCard);
-    newPlaceform.reset();
-    clearValidation(newPlaceform, validationConfig)
 } );
 
 newPlaceform.addEventListener( 'submit', (evt) => {
@@ -162,7 +189,7 @@ Promise.all([initProfileSection(), getInitialCards()])
       let isLikedByMe = card.likes.some((likeObj) => {
         return likeObj._id === myId
       })
-      placesList.append( createCardElem(card.name, card.link, deleteListItem, setImageTypePopup, handleLikeClick, card.likes.length, matchIdResult, card._id, isLikedByMe) )
+      placesList.append( createCardElem(card.name, card.link, setImageTypePopup, handleLikeClick, card.likes.length, matchIdResult, card._id, isLikedByMe, popupTypeDeleteConfirm, deleteConfirmButton) )
     } );
   })
   .catch((err) => {
