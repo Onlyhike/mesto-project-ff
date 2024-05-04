@@ -1,27 +1,26 @@
-export { createCardElem, handleLikeClick, deleteListItem, openConfirmDeletePopup };
+export { createCardElem, handleLikeClick, deleteListItem };
 import { likeCard, unLikeCard, deleteCard } from '../api';
-import { closePopup, openPopup } from './modal';
+import { closePopup } from './modal';
 
-function createCardElem( name, picture, setImageTypePopup, handleLikeClick, likesQuantityValue, ownerId, cardId, likesArray, myId, deleteListItem, openConfirmDeletePopup) {
+function createCardElem( name, picture, setImageTypePopup, handleLikeClick, likesQuantityValue, ownerId, cardId, likesArray, myId, openConfirmDeletePopup) {
     const cardTemplate = document.querySelector('#card-template').content;
     const placesItemClone = cardTemplate.cloneNode('#card-template');
-    const likeButton = placesItemClone.querySelector('.card__like-button');
+    const card = placesItemClone.querySelector('.places__item');
     const cardImage = placesItemClone.querySelector('.card__image');
     const cardTitle = placesItemClone.querySelector('.card__title');
+    const likeButton = placesItemClone.querySelector('.card__like-button');
     const deleteButton = placesItemClone.querySelector('.card__delete-button');
     const likesQuantityElem = placesItemClone.querySelector('.card__likes-quantity');
-    const deleteConfirmButton = document.querySelector('.popup__button_delete-confirm');
-    const popupTypeDeleteConfirm = document.querySelector('.popup_type_delete-confirm');
-    const placesItem = placesItemClone.querySelector('.places__item')
     const isLikedByMe = likesArray.some( (likeObj) => {
         return likeObj._id === myId
       } );
     const matchIdResult = myId === ownerId;
+
+    card.setAttribute('id', `${cardId}`)
+
     cardTitle.textContent = name;
     cardImage.src = picture;
     cardImage.alt = name;
-
-    placesItem.setAttribute('id', `${cardId}`)
 
     if (isLikedByMe) likeButton.classList.toggle('card__like-button_is-active')
 
@@ -31,31 +30,23 @@ function createCardElem( name, picture, setImageTypePopup, handleLikeClick, like
 
     if (matchIdResult) {
         deleteButton.style.display = 'inline-block';
-        deleteButton.addEventListener( 'click', () => openConfirmDeletePopup(popupTypeDeleteConfirm, deleteConfirmButton, deleteListItem, cardId));
-    }
+        deleteButton.addEventListener( 'click', () => openConfirmDeletePopup(cardId) );
+    }   
 
     cardImage.addEventListener('click', setImageTypePopup);
-    likeButton.addEventListener( 'click', (evt) => {
-        handleLikeClick(evt, cardId, likesQuantityElem)
-    } );
+    likeButton.addEventListener( 'click', (evt) => handleLikeClick(evt, cardId, likesQuantityElem) );
     
     return placesItemClone;
 }
 
-function openConfirmDeletePopup(confirmPopup, confirmButton, deleteFunc, cardId) {
-    openPopup(confirmPopup);
-    confirmButton.setAttribute('data-card-to-delete-id', `${cardId}`)
-    confirmButton.addEventListener('click', deleteFunc)
-}
-    
 function deleteListItem(evt) {
     const cardId = evt.target.getAttribute('data-card-to-delete-id');
-    const cardToDelete = document.getElementById(`${cardId}`); //здесь не разобрался почему не работает document.querySelector(`#${cardId}`), поэтому оставил getElementById
-    const confirmPopupOpened = document.querySelector('.popup_is-opened')
+    const cardToDelete = document.getElementById(`${cardId}`); 
+    const confirmPopupOpened = document.querySelector('.popup_is-opened');
+
     deleteCard(cardId)
     .then( () => {
     cardToDelete.remove();
-    evt.target.removeEventListener('click', deleteListItem)
     closePopup(confirmPopupOpened);
     } )
     .catch( (err) => {

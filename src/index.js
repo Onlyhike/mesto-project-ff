@@ -1,29 +1,37 @@
 import '../src/pages/index.css';
-import { createCardElem, handleLikeClick, deleteListItem, openConfirmDeletePopup } from './components/card';
+import { createCardElem, handleLikeClick, deleteListItem } from './components/card';
 import { openPopup, closePopup } from './components/modal';
 import { enableValidation, clearValidation } from './validation';
 import { initProfileSection, getInitialCards, sendProfileData, sendCardData, setNewAvatar, isUrlExist  } from './api';
 
 const placesList = document.querySelector('.places__list');
-const editProfileForm = document.forms['edit-profile'];
-const newAvatarForm = document.forms['new-avatar'];
-const avatarUrl = newAvatarForm.link;
-const nameInput = editProfileForm.name;
-const descriptionInput = editProfileForm.description;
+const buttonOpenEditProfileForm = document.querySelector('.profile__edit-button');
+const buttonOpenAddCardForm = document.querySelector('.profile__add-button');
 const profileImage = document.querySelector('.profile__image');
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+
+const popupTypeEdit = document.querySelector('.popup_type_edit');
+const editProfileForm = document.forms['edit-profile'];
+const nameInput = editProfileForm.name;
+const descriptionInput = editProfileForm.description;
+
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 const newPlaceform = document.forms['new-place'];
 const placeFormField = newPlaceform['place-name'];
 const pictureFormField = newPlaceform.link;
-const buttonOpenEditProfileForm = document.querySelector('.profile__edit-button');
-const buttonOpenAddCardForm = document.querySelector('.profile__add-button');
-const popupTypeEdit = document.querySelector('.popup_type_edit');
-const popupTypeNewCard = document.querySelector('.popup_type_new-card');
-const popupTypeImage = document.querySelector('.popup_type_image');
 const popupCaption = document.querySelector('.popup__caption');
-const popupImage = document.querySelector('.popup__image');
+
 const popupTypeNewAvatar = document.querySelector('.popup_type_new-avatar');
+const newAvatarForm = document.forms['new-avatar'];
+const avatarUrl = newAvatarForm.link;
+
+const popupTypeImage = document.querySelector('.popup_type_image');
+const popupImage = document.querySelector('.popup__image');
+
+const popupTypeDeleteConfirm = document.querySelector('.popup_type_delete-confirm');
+const deleteConfirmButton = document.querySelector('.popup__button_delete-confirm');
+
 const validationConfig = {
   formSelector: 'popup__form',
   inputSelector: 'popup__input',
@@ -32,6 +40,7 @@ const validationConfig = {
   inputErrorClass: 'popup__input_invalid',
   errorClass: 'popup__input-error',
 }
+
 let myId;
 
 function setImageTypePopup(evt) {
@@ -41,12 +50,17 @@ function setImageTypePopup(evt) {
   openPopup(popupTypeImage);
 }
 
+function openConfirmDeletePopup(cardId) {
+  deleteConfirmButton.setAttribute('data-card-to-delete-id', `${cardId}`); 
+  openPopup(popupTypeDeleteConfirm);
+}
+
 function addNewPlace(evt) {
   changeSubmitBtnState(evt);
 
   sendCardData(placeFormField.value, pictureFormField.value)
   .then( (result) => {
-    const newCard = createCardElem( result.name, result.link, setImageTypePopup, handleLikeClick, 0, result.owner._id, result._id, result.likes, myId, deleteListItem, openConfirmDeletePopup);
+    const newCard = createCardElem( result.name, result.link, setImageTypePopup, handleLikeClick, 0, result.owner._id, result._id, result.likes, myId, openConfirmDeletePopup);
     placesList.prepend(newCard)
   } )
   .catch( (err) => {
@@ -90,6 +104,10 @@ function changeSubmitBtnState(evt) {
   loadingText.classList.toggle('popup_button_text-is-visible');
   initialText.classList.toggle('popup_button_text-is-visible');
 }
+
+deleteConfirmButton.addEventListener('click', (evt) =>{
+  deleteListItem(evt)
+})
 
 placesList.addEventListener( 'click', (evt) => {
     if ( evt.target.classList.contains('card__image') ) {
@@ -161,7 +179,7 @@ Promise.all( [ initProfileSection(), getInitialCards() ] )
     profileImage.setAttribute('style', `background-image: url('${profileRes.avatar}')`);
 
     cardRes.forEach( (card) => {
-      placesList.append( createCardElem(card.name, card.link, setImageTypePopup, handleLikeClick, card.likes.length, card.owner._id, card._id, card.likes, myId, deleteListItem, openConfirmDeletePopup) )
+      placesList.append( createCardElem(card.name, card.link, setImageTypePopup, handleLikeClick, card.likes.length, card.owner._id, card._id, card.likes, myId, openConfirmDeletePopup) )
     } );
   } )
   .catch( (err) => {
