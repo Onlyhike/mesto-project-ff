@@ -1,8 +1,9 @@
+export { idCardForDelete }
 import '../src/pages/index.css';
 import { createCardElem, handleLikeClick, deleteListItem } from './components/card';
 import { openPopup, closePopup } from './components/modal';
 import { enableValidation, clearValidation } from './validation';
-import { initProfileSection, getInitialCards, sendProfileData, sendCardData, setNewAvatar, isUrlExist  } from './api';
+import { initProfileSection, getInitialCards, sendProfileData, sendCardData, setNewAvatar, isUrlExist } from './api';
 
 const placesList = document.querySelector('.places__list');
 const buttonOpenEditProfileForm = document.querySelector('.profile__edit-button');
@@ -42,6 +43,7 @@ const validationConfig = {
 }
 
 let myId;
+let idCardForDelete;
 
 function setImageTypePopup(evt) {
   popupImage.src = evt.target.src;
@@ -51,7 +53,7 @@ function setImageTypePopup(evt) {
 }
 
 function openConfirmDeletePopup(cardId) {
-  deleteConfirmButton.setAttribute('data-card-to-delete-id', `${cardId}`); 
+  idCardForDelete = cardId;
   openPopup(popupTypeDeleteConfirm);
 }
 
@@ -105,9 +107,7 @@ function changeSubmitBtnState(evt) {
   initialText.classList.toggle('popup_button_text-is-visible');
 }
 
-deleteConfirmButton.addEventListener('click', (evt) =>{
-  deleteListItem(evt)
-})
+deleteConfirmButton.addEventListener('click', deleteListItem)
 
 placesList.addEventListener( 'click', (evt) => {
     if ( evt.target.classList.contains('card__image') ) {
