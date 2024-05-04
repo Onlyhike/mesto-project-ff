@@ -69,6 +69,8 @@ function enableValidation(configObj) {
 function clearValidation(form, configObj) {
     const formFieldsList = form.querySelectorAll(`.${configObj.inputSelector}`);
 
+    form.reset();
+
     toggleButtonState(form, configObj.inactiveButtonClass, configObj.submitButtonSelector, configObj.inputSelector)
     formFieldsList.forEach( (formField) => {
         const errElement = form.querySelector(`.${formField.id}-error`);

@@ -21,9 +21,6 @@ function initProfileSection() {
         headers: config.headers,
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } ); 
 }
 
 function getInitialCards() {
@@ -32,9 +29,6 @@ function getInitialCards() {
         headers: config.headers,
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } );
 }
 
 function sendProfileData(name, about) {
@@ -42,14 +36,11 @@ function sendProfileData(name, about) {
         method: 'PATCH',
         headers: config.headers,
         body: JSON.stringify( {
-            name: `${name}`,
-            about: `${about}`
+            name: name,
+            about: about
         } )
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } );
 }
 
 function sendCardData(name, link) {
@@ -57,14 +48,11 @@ function sendCardData(name, link) {
         method: 'POST',
         headers: config.headers,
         body: JSON.stringify( {
-            name: `${name}`,
-            link: `${link}`
+            name: name,
+            link: link
           } )
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } );
 }
 
 function deleteCard(cardId) {
@@ -72,6 +60,8 @@ function deleteCard(cardId) {
         method: 'DELETE',
         headers: config.headers,
     } )
+    .then(handleResponse)
+    
 }
 
 function likeCard(cardId) {
@@ -80,9 +70,6 @@ function likeCard(cardId) {
         headers: config.headers,
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } )
 }
 
 function unLikeCard(cardId) {
@@ -91,9 +78,6 @@ function unLikeCard(cardId) {
         headers: config.headers,
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } )
 }
 
 function setNewAvatar(avatarUrl) {
@@ -101,17 +85,14 @@ function setNewAvatar(avatarUrl) {
         method: 'PATCH',
         headers: config.headers,
         body: JSON.stringify( {
-            avatar: `${avatarUrl}`
+            avatar: avatarUrl
         } )
     } )
     .then(handleResponse)
-    .catch( (err) => {
-        console.log(err);
-    } )
 }
 
 function isUrlExist(avatarUrl) {
-    return fetch( `${avatarUrl}`, {
+    return fetch( avatarUrl, {
         method: 'HEAD'
     } )
 }
